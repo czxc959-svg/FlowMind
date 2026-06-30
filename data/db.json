@@ -1,6 +1,27 @@
 {
   "tasks": [],
   "pomodoro_sessions": [],
+  "focus": {
+    "tasks": [
+      {
+        "id": "mr05u4refqvcc9",
+        "title": "写下今天最重要的一个学习或工作目标",
+        "type": "study",
+        "energy": "medium",
+        "done": true,
+        "createdAt": "2026-06-30T04:42:17.114Z",
+        "doneAt": "2026-06-30T04:42:28.638Z"
+      }
+    ],
+    "distractions": [],
+    "sessions": [],
+    "dailyNotes": {},
+    "timer": {
+      "selectedMinutes": 25,
+      "blocker": "",
+      "reward": ""
+    }
+  },
   "settings": [
     {
       "key": "focus_duration",

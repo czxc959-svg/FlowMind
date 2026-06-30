@@ -9,6 +9,7 @@ const path    = require('path');
 const taskRoutes     = require('./routes/tasks');
 const pomodoroRoutes = require('./routes/pomodoro');
 const statsRoutes    = require('./routes/stats');
+const focusRoutes    = require('./routes/focus');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 app.use('/api/tasks',    taskRoutes);
 app.use('/api/pomodoro', pomodoroRoutes);
 app.use('/api/stats',    statsRoutes);
+app.use('/api/focus',    focusRoutes);
 
 // API 健康检查
 app.get('/api/health', (req, res) => {

@@ -14,6 +14,15 @@ const DB_PATH = path.join(DATA_DIR, 'db.json');
 const defaultData = {
   tasks: [],
   pomodoro_sessions: [],
+  focus: {
+    tasks: [],
+    distractions: [],
+    sessions: [],
+    dailyNotes: {},
+    timer: {
+      selectedMinutes: 25
+    }
+  },
   settings: [
     { key: 'focus_duration', value: '25' },
     { key: 'short_break', value: '5' },

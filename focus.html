@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowMind 专注作战台</title>
+  <meta name="theme-color" content="#10231f" />
+  <meta name="description" content="FlowMind 是一个面向学生和工作者的专注作战台，帮助你计划、进入深度专注、记录走神并完成复盘。" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/focus.css" />
+</head>
+<body>
+  <div class="ambient-grid" aria-hidden="true"></div>
+  <canvas id="focus-field" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a class="brand" href="focus.html" aria-label="FlowMind 首页">
+      <span class="brand-mark">FM</span>
+      <span>
+        <strong>FlowMind</strong>
+        <small>专注作战台</small>
+      </span>
+    </a>
+    <nav class="top-actions" aria-label="快捷入口">
+      <a href="#plan">计划</a>
+      <a href="#focus">专注</a>
+      <a href="#review">复盘</a>
+    </nav>
+    <div class="today-chip" id="today-label"></div>
+    <div class="today-chip" id="sync-label">连接中</div>
+  </header>
+
+  <main class="shell">
+    <section class="hero-panel" id="plan">
+      <div class="hero-copy">
+        <p class="eyebrow">进入状态前，先把阻力降到最低</p>
+        <h1>今天只抓住一件最值得完成的事。</h1>
+        <p class="lead">把脑中的杂事倒出来，选定一个冲刺目标，开始计时。走神不用硬扛，丢进收纳区，结束后再处理。</p>
+      </div>
+      <div class="daily-score" aria-label="今日专注概览">
+        <div>
+          <span id="score-minutes">0</span>
+          <small>今日专注分钟</small>
+        </div>
+        <div>
+          <span id="score-sessions">0</span>
+          <small>完成冲刺</small>
+        </div>
+        <div>
+          <span id="score-done">0</span>
+          <small>收尾任务</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="side-panel" aria-label="今日任务">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Step 1</p>
+            <h2>任务雷达</h2>
+          </div>
+          <button class="icon-btn" id="clear-done-btn" title="清理已完成任务" aria-label="清理已完成任务">
+            <span aria-hidden="true">⌫</span>
+          </button>
+        </div>
+
+        <form class="task-form" id="task-form">
+          <textarea id="task-input" maxlength="180" placeholder="写下一个具体动作，例如：完成第 3 章错题整理"></textarea>
+          <div class="form-line">
+            <select id="task-type" aria-label="任务类型">
+              <option value="study">学习</option>
+              <option value="work">工作</option>
+              <option value="create">创作</option>
+              <option value="life">生活</option>
+            </select>
+            <select id="task-energy" aria-label="精力消耗">
+              <option value="deep">深度</option>
+              <option value="medium" selected>中等</option>
+              <option value="light">轻量</option>
+            </select>
+            <button type="submit">加入</button>
+          </div>
+        </form>
+
+        <div class="task-tools">
+          <button class="tool-btn active" data-filter="open">待处理</button>
+          <button class="tool-btn" data-filter="done">已完成</button>
+          <button class="tool-btn" data-filter="all">全部</button>
+        </div>
+
+        <div class="task-list" id="task-list"></div>
+      </aside>
+
+      <section class="focus-panel" id="focus" aria-label="专注冲刺">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Step 2</p>
+            <h2>深度冲刺</h2>
+          </div>
+          <button class="ghost-btn" id="fullscreen-btn">沉浸模式</button>
+        </div>
+
+        <div class="focus-target">
+          <label for="active-task">当前目标</label>
+          <select id="active-task"></select>
+        </div>
+
+        <div class="timer-stage">
+          <svg class="timer-ring" viewBox="0 0 260 260" role="img" aria-label="计时进度">
+            <circle cx="130" cy="130" r="112" class="ring-track"></circle>
+            <circle cx="130" cy="130" r="112" class="ring-progress" id="ring-progress"></circle>
+          </svg>
+          <div class="timer-readout">
+            <span id="timer-phase">准备专注</span>
+            <strong id="timer-display">25:00</strong>
+            <small id="timer-hint">开始后只做当前目标，其他想法先收纳。</small>
+          </div>
+        </div>
+
+        <div class="preset-row" aria-label="选择冲刺时长">
+          <button class="preset-btn" data-minutes="15">15</button>
+          <button class="preset-btn active" data-minutes="25">25</button>
+          <button class="preset-btn" data-minutes="45">45</button>
+          <label class="custom-minutes">
+            <span>自定</span>
+            <input id="custom-minutes" type="number" min="5" max="120" value="30" />
+          </label>
+        </div>
+
+        <div class="control-row">
+          <button class="primary-btn" id="start-btn">开始专注</button>
+          <button class="secondary-btn" id="pause-btn">暂停</button>
+          <button class="secondary-btn" id="reset-btn">重置</button>
+          <button class="secondary-btn" id="complete-btn">标记完成</button>
+        </div>
+
+        <div class="ritual-strip" aria-label="专注前检查">
+          <label><input type="checkbox" class="ritual-check" /> 水杯在手边</label>
+          <label><input type="checkbox" class="ritual-check" /> 手机远离视线</label>
+          <label><input type="checkbox" class="ritual-check" /> 只保留必要窗口</label>
+        </div>
+
+        <div class="focus-contract">
+          <div>
+            <p class="eyebrow">专注协议</p>
+            <h3 id="focus-score-title">专注准备度 0%</h3>
+            <p id="focus-score-message">勾选准备项、选择任务并收纳杂念后，开始会更轻。</p>
+          </div>
+          <div class="contract-fields">
+            <label>
+              <span>这轮最怕被什么打断？</span>
+              <input id="blocker-input" maxlength="80" placeholder="例如：手机、网页、消息" />
+            </label>
+            <label>
+              <span>完成后给自己什么恢复？</span>
+              <input id="reward-input" maxlength="80" placeholder="例如：离开座位走 5 分钟" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-panel" aria-label="走神收纳">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Step 3</p>
+            <h2>走神收纳</h2>
+          </div>
+          <button class="icon-btn" id="clear-distractions-btn" title="清空走神记录" aria-label="清空走神记录">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <form class="capture-box" id="distraction-form">
+          <input id="distraction-input" maxlength="120" placeholder="突然想到的事，先放这里" />
+          <button type="submit">收纳</button>
+        </form>
+
+        <div class="distraction-list" id="distraction-list"></div>
+
+        <div class="coach-card">
+          <p class="eyebrow">状态教练</p>
+          <h3 id="coach-title">先开一轮短冲刺</h3>
+          <p id="coach-message">如果迟迟开始不了，把时长设成 15 分钟。目标不是完美，是先进入轨道。</p>
+          <div class="coach-metrics">
+            <span id="coach-distraction-rate">干扰率 0</span>
+            <span id="coach-rest-plan">休息建议：准备开始</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="review-panel" id="review">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Step 4</p>
+          <h2>今日复盘</h2>
+        </div>
+        <button class="ghost-btn" id="export-btn">导出记录</button>
+      </div>
+
+      <div class="review-grid">
+        <article class="review-card">
+          <h3>节奏热力</h3>
+          <div class="heatmap" id="heatmap"></div>
+        </article>
+        <article class="review-card">
+          <h3>冲刺记录</h3>
+          <div class="session-log" id="session-log"></div>
+        </article>
+        <article class="review-card">
+          <h3>结束语</h3>
+          <textarea id="daily-note" maxlength="400" placeholder="今天什么做得不错？下一轮要避开什么？"></textarea>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/focus.js"></script>
+</body>
+</html>
